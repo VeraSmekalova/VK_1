@@ -1,0 +1,98 @@
+from urllib.parse import urlencode
+
+import requests
+
+import json
+
+import time
+
+class User:
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.first_name = None
+        self.last_name = None
+
+
+
+
+
+
+
+TOKEN = '50428a34493275756f4fb4ec1e09d091fa5b887822aa0a148111b569530fea66d4f56e165ba79ca9be0c4'
+
+params={
+    'access_token': TOKEN,
+    'v': '5.52'
+    }
+
+
+
+APP_ID = '7058341'
+AUTH_URL ='https://oauth.vk.com/authorize'
+AUTH_DATA = {
+    'client_id': APP_ID,
+    'display': 'page',
+    'scope': 'friends',
+    'response_type': 'token'
+}
+
+user_params = params.copy()
+
+
+id_1 = input('Введите id первого пользователя ')
+id_2 = input('Введите id второго пользователя ')
+
+
+
+
+user_1 = User(id_1)
+user_params['user_id'] = user_1.user_id
+response_user = requests.get(
+    'https://api.vk.com/method/users.get',
+    params=user_params
+)
+response_user_details = json.loads(response_user.text)
+    # print(response_user.text)
+    # print(response_user_details)
+user_1.first_name = response_user_details['response'][0]['first_name']
+user_1.last_name = response_user_details['response'][0]['last_name']
+
+    # print(user.first_name + ' ' + user.last_name)
+response = requests.get(
+    'https://api.vk.com/method/friends.get',
+    params=user_params
+)
+response_list = json.loads(response.text)
+user_1_friends_list = set(response_list['response']['items'])
+# print(user_1.first_name, user_1.last_name, user_1_friends_list)
+
+
+
+user_2 = User(id_2)
+user_params['user_id'] = user_2.user_id
+response_user = requests.get(
+    'https://api.vk.com/method/users.get',
+    params=user_params
+)
+response_user_details = json.loads(response_user.text)
+    # print(response_user.text)
+    # print(response_user_details)
+user_2.first_name = response_user_details['response'][0]['first_name']
+user_2.last_name = response_user_details['response'][0]['last_name']
+
+    # print(user.first_name + ' ' + user.last_name)
+response = requests.get(
+    'https://api.vk.com/method/friends.get',
+    params=user_params
+)
+response_list = json.loads(response.text)
+user_2_friends_list = set(response_list['response']['items'])
+# print(user_2.first_name, user_2.last_name, user_2_friends_list)
+
+common_friend_list = user_1_friends_list & user_2_friends_list
+# print(common_friend_list)
+# count = len(common_friend_list)
+
+print('Общие друзья пользователей {} {} и {} {} имеют следующие id: '.format(user_1.first_name, user_1.last_name, user_2.first_name, user_2.last_name))
+for i in common_friend_list:
+    print(i)
