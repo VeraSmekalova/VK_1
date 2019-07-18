@@ -11,9 +11,9 @@ class User:
         self.user_id = user_id
         self.first_name = None
         self.last_name = None
-        
 
-TOKEN = '16ca1982a6aed2d163a798638f8350b6e3d7e97da7d7be4936be7e9ef2eda72b6f8e13f4162dc246cb29c'
+
+TOKEN = '50428a34493275756f4fb4ec1e09d091fa5b887822aa0a148111b569530fea66d4f56e165ba79ca9be0c4'
 
 def user_details(user_id):
     user = User(user_id)
@@ -23,7 +23,7 @@ def user_details(user_id):
         params=user_params
     )
     response_user_details = json.loads(response_user.text)
-    
+    # print(response_user_details)
     user.first_name = response_user_details['response'][0]['first_name']
     user.last_name = response_user_details['response'][0]['last_name']
 
@@ -57,13 +57,13 @@ AUTH_DATA = {
     'response_type': 'token'
 }
 
-
+# print('?'.join((AUTH_URL, urlencode(AUTH_DATA))))
 response_user = requests.get(
 'https://api.vk.com/method/users.get',
     params=user_params
 )
 response_user1 = json.loads(response_user.text)
-
+print(response_user1)
 user_1.first_name = response_user1['response'][0]['first_name']
 user_1.last_name = response_user1['response'][0]['last_name']
 
@@ -77,7 +77,7 @@ response_list = json.loads(response.text)
 
 
 for id in response_list['response']['items']:
-    
+    print(id)
     user_2 = User(id)
     user_params['user_id'] = user_2.user_id
     user_params['source_uid'] = user_2.user_id
@@ -86,21 +86,21 @@ for id in response_list['response']['items']:
         'https://api.vk.com/method/users.get',
         params=user_params
     )
-    
+
     response_user2 = json.loads(response_user.text)
-    
+
     user_2.first_name = response_user2['response'][0]['first_name']
     user_2.last_name = response_user2['response'][0]['last_name']
     response_friends = requests.get(
         'https://api.vk.com/method/friends.getMutual',
         params=user_params
     )
-    )
+
     friends = json.loads(response_friends.text)
-    
+
     try:
         friends_count = len(friends['response'])
-    )
+
     except KeyError:
         ('\nМежду {} {} и {} {} общих друзей нет:'.format(user_1.last_name, user_1.first_name, user_2.last_name,
                                                             user_2.first_name))
